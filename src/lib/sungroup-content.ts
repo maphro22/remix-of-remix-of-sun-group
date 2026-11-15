@@ -313,6 +313,7 @@ const fa = {
     homeTitle: "تازه‌ترین‌ها از بازار و گمرک",
     homeAll: "همه مطالب",
     notFound: "این مطلب پیدا نشد.",
+    loadError: "مطالب بارگذاری نشد. کمی بعد دوباره امتحان کنید.",
   },
   articlesAdmin: {
     tab: "اخبار و آموزش",
@@ -742,6 +743,7 @@ const en: Copy = {
     homeTitle: "Latest from the market and customs",
     homeAll: "All articles",
     notFound: "This article was not found.",
+    loadError: "Articles could not be loaded. Please try again shortly.",
   },
   articlesAdmin: {
     tab: "News & guides",

@@ -21,7 +21,7 @@ export const Route = createFileRoute("/insights/$slug")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  errorComponent: ({ error }) => <p role="alert" className="p-10">{error.message}</p>,
+  errorComponent: () => <p role="alert" className="p-10">{content.fa.insights.loadError}</p>,
   notFoundComponent: () => <p className="p-10">{content.fa.insights.notFound}</p>,
   component: ArticlePage,
 });
