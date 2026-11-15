@@ -14,6 +14,8 @@ const fa = {
   brand: "گروه بازرگانی آفتاب",
   brandShort: "SUNGROUP",
   nav: ["خدمات", "شرکت‌های گروه", "درباره ما", "تماس", "اخبار و آموزش"],
+  /** Compact labels for the one-row phone menu (same order as nav). */
+  navShort: ["خدمات", "شرکت‌ها", "درباره ما", "تماس", "اخبار"],
   langSwitch: "English",
   hero: {
     eyebrow: "هلدینگ بازرگانی آفتاب · از سال ۲۰۰۳",
@@ -444,6 +446,7 @@ const en: Copy = {
   brand: "Sun Group Trading",
   brandShort: "SUNGROUP",
   nav: ["Services", "Group companies", "About", "Contact", "News & guides"],
+  navShort: ["Services", "Group", "About", "Contact", "News"],
   langSwitch: "فارسی",
   hero: {
     eyebrow: "Sun Group Holding · Since 2003",
