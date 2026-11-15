@@ -24,7 +24,8 @@ export function SiteShell({ lang, current, children }: { lang: Lang; current: Si
   const t = content[lang];
   const other: Lang = lang === "fa" ? "en" : "fa";
 
-  const navLinks = (className: string, activeClass: string, short = false) =>
+  /** labels: "full" always, "short" always, or "fit" = short on tablets, full from large screens. */
+  const navLinks = (className: string, activeClass: string, labels: "full" | "short" | "fit" = "full") =>
     t.nav.map((label, i) => {
       const target = navTargets[i];
       if (!target) return null;
@@ -38,13 +39,15 @@ export function SiteShell({ lang, current, children }: { lang: Lang; current: Si
           aria-current={active ? "page" : undefined}
           className={cn(className, active && activeClass)}
         >
-          {short ? (
-            <>
-              <span className="md:hidden">{t.navShort[i] ?? label}</span>
-              <span className="hidden md:inline">{label}</span>
-            </>
-          ) : (
+          {labels === "full" ? (
             label
+          ) : labels === "short" ? (
+            (t.navShort[i] ?? label)
+          ) : (
+            <>
+              <span className="lg:hidden">{t.navShort[i] ?? label}</span>
+              <span className="hidden lg:inline">{label}</span>
+            </>
           )}
         </Link>
       );
@@ -57,8 +60,12 @@ export function SiteShell({ lang, current, children }: { lang: Lang; current: Si
           <Link to="/" search={langSearch(lang)} aria-label={t.brand} className="min-w-0">
             <Wordmark label={t.brandShort} markId="header" />
           </Link>
-          <nav className="hidden items-center gap-0.5 rounded-full bg-card p-1.5 text-sm shadow-soft lg:flex xl:gap-1">
-            {navLinks("whitespace-nowrap rounded-full px-3 py-2 transition-colors hover:bg-secondary xl:px-4", "bg-secondary font-medium")}
+          <nav className="hidden min-w-0 items-center gap-0.5 rounded-full bg-card p-1.5 text-sm shadow-soft md:flex xl:gap-1">
+            {navLinks(
+              "whitespace-nowrap rounded-full px-2.5 py-2 transition-colors hover:bg-secondary lg:px-3 xl:px-4",
+              "bg-secondary font-medium",
+              "fit",
+            )}
           </nav>
           <div className="flex shrink-0 items-center gap-2">
             <Link
@@ -85,17 +92,17 @@ export function SiteShell({ lang, current, children }: { lang: Lang; current: Si
             <Link
               to="/contact"
               search={langSearch(lang)}
-              className="hidden rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground sm:inline-flex"
+              className="hidden whitespace-nowrap rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground sm:inline-flex md:hidden lg:inline-flex"
             >
               {t.nav[3]}
             </Link>
           </div>
         </div>
-        <nav className="mt-4 grid grid-cols-5 items-stretch gap-0.5 rounded-full border border-border bg-card p-1 text-xs sm:text-sm lg:hidden">
+        <nav className="mt-4 grid grid-cols-5 items-stretch gap-0.5 rounded-full border border-border bg-card p-1 text-xs sm:text-sm md:hidden">
           {navLinks(
             "flex min-h-10 min-w-0 items-center justify-center whitespace-nowrap rounded-full px-1 py-2 text-center leading-5 transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
             "bg-primary font-medium text-primary-foreground hover:bg-primary",
-            true,
+            "short",
           )}
         </nav>
       </header>
