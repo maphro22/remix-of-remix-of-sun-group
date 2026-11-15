@@ -1,10 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { FILE_RULES, checkFiles, isValidPhone, makeReferenceCode, normalizePhone, phonesMatch, safeFileName, secureRandom } from "@/lib/inquiry";
+import { FILE_RULES, checkFiles, isValidPhone, normalizePhone, safeFileName } from "@/lib/inquiry";
+import { publicClient } from "@/lib/supabase-public";
 
-const BUCKET = "inquiry-files";
-// One phone number may send at most this many inquiries per hour.
-const MAX_PER_HOUR = 5;
+// Limits (5 inquiries per phone per hour, file count) are also enforced in the database.
 
 const index = z.number().int().min(0).max(20);
 
@@ -26,53 +25,27 @@ const submitSchema = z.object({
 
 export type SubmitInquiryInput = z.infer<typeof submitSchema>;
 
-/** Public: saves a website inquiry and returns its tracking code plus one signed upload slot per attachment. */
+/** Public: saves a website inquiry and returns its tracking code plus the storage paths for its attachments. */
 export const submitInquiry = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => submitSchema.parse(input))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const phone = normalizePhone(data.phone);
-
-    const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    const { count } = await supabaseAdmin
-      .from("inquiries")
-      .select("id", { count: "exact", head: true })
-      .eq("phone", phone)
-      .gte("created_at", since);
-    if ((count ?? 0) >= MAX_PER_HOUR) return { ok: false as const, error: "rate" as const };
-
-    let row: { id: string; tracking_code: string } | null = null;
-    for (let attempt = 0; attempt < 4 && !row; attempt++) {
-      const { data: inserted, error } = await supabaseAdmin
-        .from("inquiries")
-        .insert({
-          tracking_code: makeReferenceCode(secureRandom),
-          lang: data.lang,
-          service: data.service,
-          china_city: data.chinaCity,
-          shipping_mode: data.shippingMode,
-          volume: data.volume,
-          goods: data.goods,
-          contact_name: data.name,
-          phone,
-          note: data.note || null,
-          file_count: data.files.length,
-        })
-        .select("id, tracking_code")
-        .single();
-      if (inserted) row = inserted;
-      else if (error?.code !== "23505") throw new Error(error?.message ?? "Insert failed");
-    }
-    if (!row) throw new Error("Could not create a unique tracking code");
-
-    const uploads: { path: string; token: string }[] = [];
-    for (const [i, f] of data.files.entries()) {
-      const { data: signed } = await supabaseAdmin.storage
-        .from(BUCKET)
-        .createSignedUploadUrl(`${row.id}/${i + 1}-${safeFileName(f.name)}`);
-      if (signed) uploads.push({ path: signed.path, token: signed.token });
-    }
-
+    const { data: rows, error } = await publicClient().rpc("submit_inquiry", {
+      _lang: data.lang,
+      _service: data.service,
+      _china_city: data.chinaCity,
+      _shipping_mode: data.shippingMode,
+      _volume: data.volume,
+      _goods: data.goods,
+      _name: data.name,
+      _phone: normalizePhone(data.phone),
+      _note: data.note,
+      _file_count: data.files.length,
+    });
+    if (error?.message.includes("rate_limited")) return { ok: false as const, error: "rate" as const };
+    const row = rows?.[0];
+    if (error || !row) throw new Error("Could not save the inquiry");
+    // Files go to <inquiry id>/<n>-<name>; storage only accepts them for this new inquiry.
+    const uploads = data.files.map((f, i) => `${row.id}/${i + 1}-${safeFileName(f.name)}`);
     return { ok: true as const, code: row.tracking_code, uploads };
   });
 
@@ -89,13 +62,10 @@ const trackSchema = z.object({
 export const trackInquiry = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => trackSchema.parse(input))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row } = await supabaseAdmin
-      .from("inquiries")
-      .select("tracking_code, status, service, phone, created_at, status_changed_at")
-      .eq("tracking_code", data.code)
-      .maybeSingle();
-    if (!row || !phonesMatch(row.phone, data.phone)) return { found: false as const };
+    const { data: rows, error } = await publicClient().rpc("track_inquiry", { _code: data.code, _phone: normalizePhone(data.phone) });
+    if (error) throw new Error("Could not look up the inquiry");
+    const row = rows?.[0];
+    if (!row) return { found: false as const };
     return {
       found: true as const,
       code: row.tracking_code,

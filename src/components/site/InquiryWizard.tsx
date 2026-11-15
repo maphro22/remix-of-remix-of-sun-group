@@ -126,10 +126,10 @@ export function InquiryWizard({ lang, whatsappTel, callTel }: { lang: Lang; what
         return;
       }
       const results = await Promise.all(
-        res.uploads.map((u, i) =>
+        res.uploads.map((path, i) =>
           supabase.storage
             .from("inquiry-files")
-            .uploadToSignedUrl(u.path, u.token, files[i]!, { contentType: files[i]!.type })
+            .upload(path, files[i]!, { contentType: files[i]!.type, upsert: false })
             .then((r) => !r.error)
             .catch(() => false),
         ),

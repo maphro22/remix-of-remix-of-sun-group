@@ -32,8 +32,8 @@ export const Route = createFileRoute("/_authenticated/articles")({
     ],
   }),
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(accessQuery);
-    await context.queryClient.ensureQueryData(allArticlesQuery);
+    const access = await context.queryClient.ensureQueryData(accessQuery);
+    if (access.isTeam) await context.queryClient.ensureQueryData(allArticlesQuery);
   },
   component: ArticlesAdmin,
 });
@@ -42,6 +42,23 @@ const blank = { slug: "", title: "", excerpt: "", body: "", category: "guide" as
 
 function ArticlesAdmin() {
   const lang: Lang = Route.useSearch().lang ?? "fa";
+  const d = content[lang].dashboard;
+  const { data: access } = useSuspenseQuery(accessQuery);
+  if (access.isTeam) return <ArticlesEditor lang={lang} />;
+  return (
+    <SiteShell lang={lang} current="/articles">
+      <section className="mx-auto max-w-4xl px-6 py-8 md:py-12">
+        <TeamBar lang={lang} current="/articles" isAdmin={access.isAdmin} email={access.email} />
+        <div className="mt-10 rounded-[2rem] bg-card p-8 shadow-soft">
+          <h1 className="font-display text-2xl font-semibold">{d.pendingTitle}</h1>
+          <p className="mt-3 text-muted-foreground">{d.pendingBody}</p>
+        </div>
+      </section>
+    </SiteShell>
+  );
+}
+
+function ArticlesEditor({ lang }: { lang: Lang }) {
   const t = content[lang].articlesAdmin;
   const cats = content[lang].insights.categories;
   const qc = useQueryClient();
@@ -58,14 +75,18 @@ function ArticlesAdmin() {
     let cover = form.cover_url;
     if (file) {
       const path = `${crypto.randomUUID()}-${file.name.replace(/[^\w.-]/g, "")}`;
-      const up = await supabase.storage.from("article-covers").upload(path, file);
-      if (!up.error) cover = path;
+      const up = await supabase.storage.from("article-covers").upload(path, file, { contentType: file.type });
+      if (up.error) {
+        setBusy(false);
+        return setError(t.coverError);
+      }
+      cover = path;
     }
     const { id, ...rest } = form;
     const payload = { ...rest, slug: rest.slug.trim().toLowerCase(), instagram_url: rest.instagram_url || null, cover_url: cover, author_id: access.userId };
     const res = id ? await supabase.from("articles").update(payload).eq("id", id) : await supabase.from("articles").insert(payload);
     setBusy(false);
-    if (res.error) return setError(t.error);
+    if (res.error) return setError(res.error.code === "23505" ? t.slugTaken : t.error);
     setForm(null); setFile(null);
     await qc.invalidateQueries({ queryKey: ["team", "articles"] });
   };

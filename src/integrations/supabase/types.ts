@@ -172,6 +172,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_upload_inquiry_file: {
+        Args: { _object_name: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -188,6 +192,34 @@ export type Database = {
         }[]
       }
       is_team: { Args: { _user_id: string }; Returns: boolean }
+      submit_inquiry: {
+        Args: {
+          _china_city: number
+          _file_count: number
+          _goods: string
+          _lang: string
+          _name: string
+          _note: string
+          _phone: string
+          _service: number
+          _shipping_mode: number
+          _volume: number
+        }
+        Returns: {
+          id: string
+          tracking_code: string
+        }[]
+      }
+      track_inquiry: {
+        Args: { _code: string; _phone: string }
+        Returns: {
+          created_at: string
+          service: number
+          status: Database["public"]["Enums"]["inquiry_status"]
+          status_changed_at: string
+          tracking_code: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "staff"
