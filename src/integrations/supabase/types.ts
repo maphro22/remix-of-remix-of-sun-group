@@ -19,6 +19,7 @@ export type Database = {
           author_id: string | null
           body: string
           category: Database["public"]["Enums"]["article_category"]
+          cover_link: string | null
           cover_url: string | null
           created_at: string
           excerpt: string
@@ -35,6 +36,7 @@ export type Database = {
           author_id?: string | null
           body?: string
           category?: Database["public"]["Enums"]["article_category"]
+          cover_link?: string | null
           cover_url?: string | null
           created_at?: string
           excerpt?: string
@@ -51,6 +53,7 @@ export type Database = {
           author_id?: string | null
           body?: string
           category?: Database["public"]["Enums"]["article_category"]
+          cover_link?: string | null
           cover_url?: string | null
           created_at?: string
           excerpt?: string

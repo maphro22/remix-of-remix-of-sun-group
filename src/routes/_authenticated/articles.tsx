@@ -38,6 +38,9 @@ export const Route = createFileRoute("/_authenticated/articles")({
   component: ArticlesAdmin,
 });
 
+/** Ten years: cover links are refreshed every time an article is saved. */
+const COVER_LINK_SECONDS = 60 * 60 * 24 * 365 * 10;
+
 const blank = { slug: "", title: "", excerpt: "", body: "", category: "guide" as Article["category"], lang: "fa", status: "draft" as Article["status"], instagram_url: "", cover_url: null as string | null };
 
 function ArticlesAdmin() {
@@ -82,8 +85,18 @@ function ArticlesEditor({ lang }: { lang: Lang }) {
       }
       cover = path;
     }
+    // Public visitors cannot read the cover folder; give the article a long-lived private link instead.
+    let coverLink: string | null = null;
+    if (cover) {
+      const signed = await supabase.storage.from("article-covers").createSignedUrl(cover, COVER_LINK_SECONDS);
+      if (signed.error || !signed.data) {
+        setBusy(false);
+        return setError(t.coverError);
+      }
+      coverLink = signed.data.signedUrl;
+    }
     const { id, ...rest } = form;
-    const payload = { ...rest, slug: rest.slug.trim().toLowerCase(), instagram_url: rest.instagram_url || null, cover_url: cover, author_id: access.userId };
+    const payload = { ...rest, cover_link: coverLink, slug: rest.slug.trim().toLowerCase(), instagram_url: rest.instagram_url || null, cover_url: cover, author_id: access.userId };
     const res = id ? await supabase.from("articles").update(payload).eq("id", id) : await supabase.from("articles").insert(payload);
     setBusy(false);
     if (res.error) return setError(res.error.code === "23505" ? t.slugTaken : t.error);

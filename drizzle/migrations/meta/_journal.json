@@ -29,6 +29,13 @@
       "when": 1794766481645,
       "tag": "0003_public_inquiry_functions",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794810737511,
+      "tag": "0004_article_cover_links",
+      "breakpoints": true
     }
   ]
 }
