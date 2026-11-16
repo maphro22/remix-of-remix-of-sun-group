@@ -1,13 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, FileSignature, Globe2, Handshake, MapPin, PackageCheck, SearchCheck, Truck } from "lucide-react";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { ArrowRight, Instagram, FileSignature, Globe2, Handshake, MapPin, PackageCheck, SearchCheck, Truck } from "lucide-react";
 import hero from "@/assets/hero-shipping.jpg";
+import { ArticleCard } from "@/components/site/ArticleCard";
 import { ContactBlock } from "@/components/site/ContactBlock";
 import { IntroSplash, useIntroState } from "@/components/site/IntroSplash";
 import { langSearch, SiteShell } from "@/components/site/SiteShell";
-import { content, parseLang } from "@/lib/sungroup-content";
+import { listArticles } from "@/lib/articles.functions";
+import { content, parseLang, type Lang } from "@/lib/sungroup-content";
+
+// The home page must never fail because of the articles block: on error it simply hides.
+const latestArticlesQuery = (lang: Lang) =>
+  queryOptions({
+    queryKey: ["articles", lang, "home"],
+    queryFn: () => listArticles({ data: { lang, limit: 3 } }).catch(() => []),
+  });
 
 export const Route = createFileRoute("/")({
   validateSearch: parseLang,
+  loaderDeps: ({ search }) => ({ lang: search.lang ?? "fa" }),
+  loader: ({ context, deps }) => context.queryClient.ensureQueryData(latestArticlesQuery(deps.lang)),
   head: () => ({
     meta: [
       { title: "SUNGROUP — گروه بازرگانی آفتاب | تجارت ایران و چین" },
@@ -203,7 +215,50 @@ function HomePage() {
         </div>
       </section>
 
+      <LatestArticles lang={lang} />
+
       <ContactBlock lang={lang} />
     </SiteShell>
+  );
+}
+
+function LatestArticles({ lang }: { lang: Lang }) {
+  const t = content[lang].insights;
+  const ig = content[lang].instagram;
+  const { data } = useSuspenseQuery(latestArticlesQuery(lang));
+  if (data.length === 0) return null;
+  return (
+    <section className="mx-auto max-w-7xl px-6 pb-16 md:pb-24">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-primary">{t.eyebrow}</p>
+          <h2 className="mt-2 font-display text-3xl font-semibold sm:text-4xl">{t.homeTitle}</h2>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <a
+            href={ig.url}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-semibold"
+          >
+            <Instagram className="size-4 text-primary" />
+            <span dir="ltr">{ig.handle}</span>
+          </a>
+          <Link
+            to="/insights"
+            search={langSearch(lang)}
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+          >
+            {t.homeAll}
+            <ArrowRight className="size-4 rtl:rotate-180" />
+          </Link>
+        </div>
+      </div>
+      <div className="mt-8 grid gap-6 md:grid-cols-3">
+        {data.map((a) => (
+          <ArticleCard key={a.slug} lang={lang} a={a} />
+        ))}
+      </div>
+    </section>
   );
 }
