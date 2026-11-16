@@ -19,6 +19,7 @@ const allArticlesQuery = queryOptions({
 });
 
 export const Route = createFileRoute("/_authenticated/articles")({
+  staticData: { sitemap: false },
   validateSearch: parseLang,
   head: () => ({
     meta: [

@@ -3,23 +3,16 @@ import { Compass, Eye, Gauge, HeartHandshake, Lock, MapPin, Target } from "lucid
 import guangzhou from "@/assets/about-guangzhou.jpg";
 import { ContactBlock } from "@/components/site/ContactBlock";
 import { SiteShell } from "@/components/site/SiteShell";
+import { pageHead } from "@/lib/seo";
 import { content, parseLang } from "@/lib/sungroup-content";
 
 export const Route = createFileRoute("/about")({
+  staticData: { sitemap: true },
   validateSearch: parseLang,
-  head: () => ({
-    meta: [
-      { title: "درباره ما | SUNGROUP — گروه بازرگانی آفتاب" },
-      {
-        name: "description",
-        content: "داستان، مأموریت، ارزش‌ها و شبکه‌ی بین‌المللی گروه بازرگانی آفتاب؛ بیش از دو دهه تجارت میان ایران و چین.",
-      },
-      { property: "og:title", content: "درباره ما | SUNGROUP" },
-      { property: "og:description", content: "بیش از دو دهه تجربه در تجارت ایران و چین." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ match }) => {
+    const lang = match.search.lang ?? "fa";
+    return pageHead("about", "/about", lang);
+  },
   component: AboutPage,
 });
 

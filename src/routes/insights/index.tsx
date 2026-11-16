@@ -3,24 +3,20 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { SiteShell } from "@/components/site/SiteShell";
 import { ArticleCard } from "@/components/site/ArticleCard";
 import { listArticles } from "@/lib/articles.functions";
+import { pageHead } from "@/lib/seo";
 import { content, parseLang, type Lang } from "@/lib/sungroup-content";
 
 const articlesQuery = (lang: Lang) => queryOptions({ queryKey: ["articles", lang], queryFn: () => listArticles({ data: { lang, limit: 30 } }) });
 
 export const Route = createFileRoute("/insights/")({
+  staticData: { sitemap: true },
   validateSearch: parseLang,
   loaderDeps: ({ search }) => ({ lang: search.lang ?? "fa" }),
   loader: ({ context, deps }) => context.queryClient.ensureQueryData(articlesQuery(deps.lang)),
-  head: () => ({
-    meta: [
-      { title: "اخبار و آموزش بازرگانی | SUNGROUP" },
-      { name: "description", content: "راهنمای واردات از چین، اخبار گمرک و ترخیص و تحلیل بازار چین از گروه بازرگانی آفتاب." },
-      { property: "og:title", content: "اخبار و آموزش بازرگانی | SUNGROUP" },
-      { property: "og:description", content: "راهنمای واردات، اخبار گمرک و بازار چین." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ match }) => {
+    const lang = match.search.lang ?? "fa";
+    return pageHead("insights", "/insights", lang);
+  },
   errorComponent: () => <p role="alert" className="p-10">{content.fa.insights.loadError}</p>,
   notFoundComponent: () => <p className="p-10">{content.fa.insights.notFound}</p>,
   component: InsightsPage,

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 // Team-only area. The session lives in the browser, so this gate runs client-side.
 export const Route = createFileRoute("/_authenticated")({
+  staticData: { sitemap: "exclude-subtree" },
   ssr: false,
   beforeLoad: async () => {
     const { data, error } = await supabase.auth.getUser();

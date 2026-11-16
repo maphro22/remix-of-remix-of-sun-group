@@ -20,3 +20,5 @@
 - The home intro (`IntroSplash`) is pure CSS on one shared timeline with the hero (`--intro` offset) and plays once per full page load, so it starts before hydration and never replays on in-app navigation.
 
 - Article cover photos are served via a long-lived signed link saved on the article (`cover_link`) when the team saves it; the `article-covers` bucket stays team-only because public buckets are blocked in this workspace.
+- Public page head tags (title, description, canonical, hreflang fa/en/x-default, Open Graph, Twitter, JSON-LD) come from `src/lib/seo.ts` with copy in `content[lang].seo`, so every page and language stays consistent.
+- Every route declares `staticData.sitemap`; `/sitemap.xml` derives bilingual page URLs from the router plus published articles, and `/llms.txt` summarises the company for AI assistants from the shared copy.

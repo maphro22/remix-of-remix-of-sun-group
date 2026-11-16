@@ -4,24 +4,17 @@ import { ArrowLeft, ArrowRight, Banknote, Car, Factory, Ship, type LucideIcon } 
 import { ContactBlock } from "@/components/site/ContactBlock";
 import { SunMark } from "@/components/site/Logo";
 import { SiteShell } from "@/components/site/SiteShell";
+import { pageHead } from "@/lib/seo";
 import { content, parseLang } from "@/lib/sungroup-content";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/group")({
+  staticData: { sitemap: true },
   validateSearch: parseLang,
-  head: () => ({
-    meta: [
-      { title: "شرکت‌های گروه | SUNGROUP — هلدینگ بازرگانی آفتاب" },
-      {
-        name: "description",
-        content: "شش شرکت تخصصی هلدینگ آفتاب در ارز، خودرو، گمرک، حمل و تولید؛ زیر یک مدیریت واحد.",
-      },
-      { property: "og:title", content: "شرکت‌های گروه | SUNGROUP" },
-      { property: "og:description", content: "شش شرکت تخصصی، یک امضای مطمئن." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ match }) => {
+    const lang = match.search.lang ?? "fa";
+    return pageHead("group", "/group", lang);
+  },
   component: GroupPage,
 });
 

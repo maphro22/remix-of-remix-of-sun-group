@@ -14,6 +14,7 @@ export type PublicArticle = {
   coverUrl: string | null;
   instagramUrl: string | null;
   publishedAt: string | null;
+  updatedAt: string;
 };
 
 type Row = Database["public"]["Tables"]["articles"]["Row"];
@@ -30,6 +31,7 @@ function toPublic(rows: Row[]): PublicArticle[] {
     coverUrl: r.cover_url ? (r.cover_link ?? null) : null,
     instagramUrl: r.instagram_url,
     publishedAt: r.published_at,
+    updatedAt: r.updated_at,
   }));
 }
 

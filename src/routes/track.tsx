@@ -7,26 +7,22 @@ import { Label } from "@/components/ui/label";
 import { langSearch, SiteShell } from "@/components/site/SiteShell";
 import { formatDateTime } from "@/lib/format";
 import { trackInquiry } from "@/lib/inquiry.functions";
+import { pageHead } from "@/lib/seo";
 import { content, parseLang, type Lang } from "@/lib/sungroup-content";
 import { cn } from "@/lib/utils";
 
 type TrackSearch = { lang?: Lang; code?: string | undefined };
 
 export const Route = createFileRoute("/track")({
+  staticData: { sitemap: true },
   validateSearch: (s: Record<string, unknown>): TrackSearch => {
     const code = typeof s["code"] === "string" && /^SG-[A-Z0-9]{6}$/i.test(s["code"]) ? s["code"].toUpperCase() : undefined;
     return { ...parseLang(s), ...(code ? { code } : {}) };
   },
-  head: () => ({
-    meta: [
-      { title: "پیگیری استعلام | SUNGROUP — گروه بازرگانی آفتاب" },
-      { name: "description", content: "با کد پیگیری و شماره تماس، وضعیت استعلام قیمت خود را در گروه بازرگانی آفتاب ببینید." },
-      { property: "og:title", content: "پیگیری استعلام | SUNGROUP" },
-      { property: "og:description", content: "وضعیت استعلام‌تان را با کد پیگیری ببینید: دریافت، بررسی، قیمت‌دهی." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
+  head: ({ match }) => {
+    const lang = match.search.lang ?? "fa";
+    return pageHead("track", "/track", lang);
+  },
   component: TrackPage,
 });
 

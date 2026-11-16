@@ -437,6 +437,44 @@ const fa = {
     onlyAdmins: "فقط مدیر پنل به این بخش دسترسی دارد.",
     error: "تغییر انجام نشد. دوباره امتحان کنید.",
   },
+  /** Search & social-preview copy, one entry per public page. */
+  seo: {
+    siteName: "SUNGROUP — گروه بازرگانی آفتاب",
+    home: "خانه",
+    pages: {
+      home: {
+        title: "SUNGROUP | گروه بازرگانی آفتاب — واردات از چین و تجارت ایران و چین",
+        description:
+          "گروه بازرگانی آفتاب؛ واردات مستقیم از چین، بازرسی کیفیت در کارخانه، حمل و ترخیص کالا با دفاتر در ایران، چین، لیتوانی و عراق و بیش از دو دهه تجربه.",
+      },
+      services: {
+        title: "خدمات واردات از چین، بازرسی کیفیت و ترخیص کالا | SUNGROUP",
+        description:
+          "مشاوره بازرگانی، بازرسی و کنترل کیفیت در کارخانه، واردات مستقیم از چین، صادرات، حمل دریایی، هوایی، ریلی و زمینی و ترخیص گمرکی؛ صفر تا صد تجارت با چین.",
+      },
+      group: {
+        title: "شرکت‌های هلدینگ آفتاب | صرافی، خودرو، گمرک و حمل — SUNGROUP",
+        description: "شش شرکت تخصصی هلدینگ آفتاب در ارز، خودرو، گمرک، حمل و تولید؛ زیر یک مدیریت واحد و با یک امضای مطمئن.",
+      },
+      about: {
+        title: "درباره گروه بازرگانی آفتاب | بیش از دو دهه تجارت با چین",
+        description: "داستان، مأموریت، ارزش‌ها و شبکه‌ی بین‌المللی گروه بازرگانی آفتاب؛ بیش از دو دهه تجارت میان ایران و چین با دفاتر در چهار کشور.",
+      },
+      contact: {
+        title: "تماس و استعلام رایگان قیمت واردات از چین | SUNGROUP",
+        description:
+          "استعلام رایگان قیمت واردات، صادرات و حمل از چین در سه قدم کوتاه؛ دفتر تهران و دفتر گوانجو با ساعت کاری و شماره تماس مستقیم.",
+      },
+      insights: {
+        title: "اخبار و آموزش واردات از چین | SUNGROUP",
+        description: "راهنمای واردات از چین، اخبار گمرک و ترخیص کالا و تحلیل بازار چین؛ کوتاه و کاربردی از گروه بازرگانی آفتاب.",
+      },
+      track: {
+        title: "پیگیری استعلام قیمت | SUNGROUP — گروه بازرگانی آفتاب",
+        description: "با کد پیگیری و شماره تماس، وضعیت استعلام قیمت خود را در گروه بازرگانی آفتاب ببینید: دریافت، بررسی و قیمت‌دهی.",
+      },
+    },
+  },
   ctaTitle: "تجارت بعدی‌تان را با ما شروع کنید",
   ctaSub: "مشاوره اولیه رایگان است. کالا، حجم و مقصد را بگویید؛ بقیه با ما.",
   footer: "تمامی حقوق برای گروه بازرگانی آفتاب محفوظ است.",
@@ -869,6 +907,46 @@ const en: Copy = {
     you: "You",
     onlyAdmins: "Only dashboard admins can open this section.",
     error: "Change failed. Please try again.",
+  },
+  /** Search & social-preview copy, one entry per public page. */
+  seo: {
+    siteName: "SUNGROUP — Sun Group Trading",
+    home: "Home",
+    pages: {
+      home: {
+        title: "SUNGROUP | Sun Group Trading — Import from China & Iran–China Trade",
+        description:
+          "Sun Group Trading: sourcing from China, factory quality inspection, freight and customs clearance between Iran and China. Offices in Iran, China, Lithuania and Iraq since 2003.",
+      },
+      services: {
+        title: "Import from China, Quality Inspection & Customs Clearance | SUNGROUP",
+        description:
+          "Trade consulting, factory quality inspection, direct import from China, export, sea, air, rail and road freight, and customs clearance — end-to-end China trade.",
+      },
+      group: {
+        title: "Sun Group Holding Companies | Exchange, Vehicles, Customs & Freight",
+        description:
+          "Six specialist companies of Sun Group Holding — currency exchange, vehicles, customs, freight and manufacturing — under one management.",
+      },
+      about: {
+        title: "About Sun Group Trading | 20+ Years of Iran–China Trade",
+        description:
+          "The story, mission, values and international network of Sun Group Trading — over two decades of trade between Iran and China, with offices in four countries.",
+      },
+      contact: {
+        title: "Contact & Free Import Quote from China | SUNGROUP",
+        description:
+          "Get a free quote for import, export or shipping from China in three short steps. Tehran and Guangzhou offices with working hours and direct phone lines.",
+      },
+      insights: {
+        title: "China Trade News & Import Guides | SUNGROUP",
+        description: "Import guides, customs and clearance news, and China market insights — short and practical, from Sun Group Trading.",
+      },
+      track: {
+        title: "Track Your Price Inquiry | SUNGROUP — Sun Group Trading",
+        description: "Enter your tracking code and phone number to see the status of your price inquiry with Sun Group Trading: received, reviewing, quoted.",
+      },
+    },
   },
   ctaTitle: "Start your next trade with us",
   ctaSub: "The first consultation is free. Tell us the product, volume and destination — we handle the rest.",

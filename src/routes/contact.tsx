@@ -4,23 +4,16 @@ import hub from "@/assets/contact-logistics-hub.jpg";
 import { InquiryWizard } from "@/components/site/InquiryWizard";
 import { OfficeClockChip, officeState, StatusPill, useNow } from "@/components/site/OfficeClock";
 import { SiteShell } from "@/components/site/SiteShell";
+import { pageHead } from "@/lib/seo";
 import { content, parseLang } from "@/lib/sungroup-content";
 
 export const Route = createFileRoute("/contact")({
+  staticData: { sitemap: true },
   validateSearch: parseLang,
-  head: () => ({
-    meta: [
-      { title: "تماس و استعلام قیمت | SUNGROUP — گروه بازرگانی آفتاب" },
-      {
-        name: "description",
-        content: "استعلام سه‌مرحله‌ای واردات، صادرات و حمل از چین؛ دفاتر تهران و گوانجو با ساعت محلی و وضعیت باز بودن.",
-      },
-      { property: "og:title", content: "تماس و استعلام | SUNGROUP" },
-      { property: "og:description", content: "در سه قدم کوتاه استعلام بگیرید؛ کارشناس ما با بهترین مسیر تماس می‌گیرد." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ match }) => {
+    const lang = match.search.lang ?? "fa";
+    return pageHead("contact", "/contact", lang);
+  },
   component: ContactPage,
 });
 

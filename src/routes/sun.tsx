@@ -3,6 +3,7 @@ import { parseLang } from "@/lib/sungroup-content";
 
 // Old design-sample URL; version C is now the home page.
 export const Route = createFileRoute("/sun")({
+  staticData: { sitemap: false },
   validateSearch: parseLang,
   beforeLoad: ({ search }) => {
     throw redirect({ to: "/", search, statusCode: 301 });

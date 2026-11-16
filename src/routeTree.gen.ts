@@ -17,7 +17,9 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as GlobalRouteImport } from './routes/global'
 import { Route as GroupRouteImport } from './routes/group'
 import { Route as HoldingRouteImport } from './routes/holding'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SunRouteImport } from './routes/sun'
 import { Route as TrackRouteImport } from './routes/track'
 import { Route as AuthenticatedArticlesRouteImport } from './routes/_authenticated/articles'
@@ -65,9 +67,19 @@ const HoldingRoute = HoldingRouteImport.update({
   path: '/holding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SunRoute = SunRouteImport.update({
@@ -114,7 +126,9 @@ export interface FileRoutesByFullPath {
   '/global': typeof GlobalRoute
   '/group': typeof GroupRoute
   '/holding': typeof HoldingRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sun': typeof SunRoute
   '/track': typeof TrackRoute
   '/articles': typeof AuthenticatedArticlesRoute
@@ -131,7 +145,9 @@ export interface FileRoutesByTo {
   '/global': typeof GlobalRoute
   '/group': typeof GroupRoute
   '/holding': typeof HoldingRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sun': typeof SunRoute
   '/track': typeof TrackRoute
   '/articles': typeof AuthenticatedArticlesRoute
@@ -150,7 +166,9 @@ export interface FileRoutesById {
   '/global': typeof GlobalRoute
   '/group': typeof GroupRoute
   '/holding': typeof HoldingRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sun': typeof SunRoute
   '/track': typeof TrackRoute
   '/_authenticated/articles': typeof AuthenticatedArticlesRoute
@@ -169,7 +187,9 @@ export interface FileRouteTypes {
     | '/global'
     | '/group'
     | '/holding'
+    | '/llms.txt'
     | '/services'
+    | '/sitemap.xml'
     | '/sun'
     | '/track'
     | '/articles'
@@ -186,7 +206,9 @@ export interface FileRouteTypes {
     | '/global'
     | '/group'
     | '/holding'
+    | '/llms.txt'
     | '/services'
+    | '/sitemap.xml'
     | '/sun'
     | '/track'
     | '/articles'
@@ -204,7 +226,9 @@ export interface FileRouteTypes {
     | '/global'
     | '/group'
     | '/holding'
+    | '/llms.txt'
     | '/services'
+    | '/sitemap.xml'
     | '/sun'
     | '/track'
     | '/_authenticated/articles'
@@ -223,7 +247,9 @@ export interface RootRouteChildren {
   GlobalRoute: typeof GlobalRoute
   GroupRoute: typeof GroupRoute
   HoldingRoute: typeof HoldingRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   ServicesRoute: typeof ServicesRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SunRoute: typeof SunRoute
   TrackRoute: typeof TrackRoute
   InsightsSlugRoute: typeof InsightsSlugRoute
@@ -288,11 +314,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HoldingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sun': {
@@ -371,7 +411,9 @@ const rootRouteChildren: RootRouteChildren = {
   GlobalRoute: GlobalRoute,
   GroupRoute: GroupRoute,
   HoldingRoute: HoldingRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   ServicesRoute: ServicesRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SunRoute: SunRoute,
   TrackRoute: TrackRoute,
   InsightsSlugRoute: InsightsSlugRoute,

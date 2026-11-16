@@ -16,26 +16,16 @@ import {
 import terminal from "@/assets/services-terminal.jpg";
 import { ContactBlock } from "@/components/site/ContactBlock";
 import { langSearch, SiteShell } from "@/components/site/SiteShell";
+import { pageHead, servicesJsonLd } from "@/lib/seo";
 import { content, parseLang } from "@/lib/sungroup-content";
 
 export const Route = createFileRoute("/services")({
+  staticData: { sitemap: true },
   validateSearch: parseLang,
-  head: () => ({
-    meta: [
-      { title: "خدمات بازرگانی | SUNGROUP — گروه بازرگانی آفتاب" },
-      {
-        name: "description",
-        content: "مشاوره، بازرسی کیفیت، واردات از چین، صادرات، حمل درب به درب و تنظیم قرارداد؛ همه خدمات گروه بازرگانی آفتاب.",
-      },
-      { property: "og:title", content: "خدمات بازرگانی | SUNGROUP" },
-      {
-        property: "og:description",
-        content: "صفر تا صد تجارت شما با چین، زیر یک سقف — از انتخاب کالا تا تحویل در انبار.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ match }) => {
+    const lang = match.search.lang ?? "fa";
+    return pageHead("services", "/services", lang, [servicesJsonLd(lang)]);
+  },
   component: ServicesPage,
 });
 

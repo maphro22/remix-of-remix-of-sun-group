@@ -11,6 +11,7 @@ import { content, parseLang } from "@/lib/sungroup-content";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
+  staticData: { sitemap: false },
   validateSearch: parseLang,
   head: () => ({
     meta: [

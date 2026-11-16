@@ -2,25 +2,65 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Instagram } from "lucide-react";
 import { SiteShell, langSearch } from "@/components/site/SiteShell";
 import { getArticle } from "@/lib/articles.functions";
-import { content, parseLang } from "@/lib/sungroup-content";
+import { breadcrumbJsonLd, jsonLdScript, OG_LOCALE, ORG_ID, pageUrl } from "@/lib/seo";
+import { content, parseLang, type Lang } from "@/lib/sungroup-content";
 
 export const Route = createFileRoute("/insights/$slug")({
+  staticData: { sitemap: true },
   validateSearch: parseLang,
   loader: async ({ params }) => {
     const a = await getArticle({ data: { slug: params.slug } });
     if (!a) throw notFound();
     return a;
   },
-  head: ({ loaderData }) => ({
-    meta: [
-      { title: loaderData ? `${loaderData.title} | SUNGROUP` : "Unavailable" },
-      { name: "description", content: loaderData?.excerpt ?? "" },
-      { property: "og:title", content: loaderData?.title ?? "SUNGROUP" },
-      { property: "og:description", content: loaderData?.excerpt ?? "" },
-      { property: "og:type", content: "article" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ loaderData: a }) => {
+    if (!a) return { meta: [{ title: "SUNGROUP" }, { name: "robots", content: "noindex" }] };
+    const lang: Lang = a.lang === "en" ? "en" : "fa";
+    const t = content[lang];
+    const url = pageUrl(`/insights/${encodeURIComponent(a.slug)}`, lang);
+    const title = `${a.title} | SUNGROUP`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: a.excerpt },
+        { property: "og:title", content: a.title },
+        { property: "og:description", content: a.excerpt },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { property: "og:locale", content: OG_LOCALE[lang] },
+        { property: "article:section", content: t.insights.categories[a.category] },
+        ...(a.publishedAt ? [{ property: "article:published_time", content: a.publishedAt }] : []),
+        { property: "article:modified_time", content: a.updatedAt },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: a.title },
+        { name: "twitter:description", content: a.excerpt },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        jsonLdScript({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: a.title,
+          description: a.excerpt,
+          inLanguage: lang,
+          articleSection: t.insights.categories[a.category],
+          ...(a.coverUrl ? { image: [a.coverUrl] } : {}),
+          ...(a.publishedAt ? { datePublished: a.publishedAt } : {}),
+          dateModified: a.updatedAt,
+          author: { "@id": ORG_ID },
+          publisher: { "@id": ORG_ID },
+          mainEntityOfPage: { "@type": "WebPage", "@id": url },
+          url,
+        }),
+        jsonLdScript(
+          breadcrumbJsonLd(lang, [
+            { name: t.seo.pages.insights.title, url: pageUrl("/insights", lang) },
+            { name: a.title, url },
+          ]),
+        ),
+      ],
+    };
+  },
   errorComponent: () => <p role="alert" className="p-10">{content.fa.insights.loadError}</p>,
   notFoundComponent: () => <p className="p-10">{content.fa.insights.notFound}</p>,
   component: ArticlePage,

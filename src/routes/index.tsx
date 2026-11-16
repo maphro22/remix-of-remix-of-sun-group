@@ -7,6 +7,7 @@ import { ContactBlock } from "@/components/site/ContactBlock";
 import { IntroSplash, useIntroState } from "@/components/site/IntroSplash";
 import { langSearch, SiteShell } from "@/components/site/SiteShell";
 import { listArticles } from "@/lib/articles.functions";
+import { pageHead } from "@/lib/seo";
 import { content, parseLang, type Lang } from "@/lib/sungroup-content";
 
 // The home page must never fail because of the articles block: on error it simply hides.
@@ -17,25 +18,14 @@ const latestArticlesQuery = (lang: Lang) =>
   });
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   validateSearch: parseLang,
   loaderDeps: ({ search }) => ({ lang: search.lang ?? "fa" }),
   loader: ({ context, deps }) => context.queryClient.ensureQueryData(latestArticlesQuery(deps.lang)),
-  head: () => ({
-    meta: [
-      { title: "SUNGROUP — گروه بازرگانی آفتاب | تجارت ایران و چین" },
-      {
-        name: "description",
-        content: "گروه بازرگانی آفتاب؛ تأمین، بازرسی، حمل و ترخیص کالا میان ایران و چین با دفاتر در ایران، چین، لیتوانی و عراق.",
-      },
-      { property: "og:title", content: "SUNGROUP — گروه بازرگانی آفتاب" },
-      {
-        property: "og:description",
-        content: "پل مطمئن تجارت میان ایران و چین؛ از اولین مشاوره تا تحویل درِ انبار شما.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ match }) => {
+    const lang = match.search.lang ?? "fa";
+    return pageHead("home", "/", lang);
+  },
   component: HomePage,
 });
 

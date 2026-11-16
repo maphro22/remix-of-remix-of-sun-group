@@ -15,6 +15,7 @@ import { accessQuery, inquiriesQuery, inquiryFilesQuery, weeklyStatsQuery, type 
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
+  staticData: { sitemap: false },
   validateSearch: parseLang,
   head: () => ({
     meta: [

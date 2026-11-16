@@ -8,6 +8,7 @@ import { content, parseLang, type Lang } from "@/lib/sungroup-content";
 import { accessQuery, teamMembersQuery } from "@/lib/team-queries";
 
 export const Route = createFileRoute("/_authenticated/team")({
+  staticData: { sitemap: false },
   validateSearch: parseLang,
   head: () => ({
     meta: [

@@ -20,4 +20,5 @@
 - [x] News & guides section: admin panel, /insights archive, article pages, latest-articles block on the home page, 3 starter articles (FA + EN)
 - [ ] Real Instagram page address for the news section — waiting on user
 - [ ] Article cover images security warning — waiting on user's choice (allow public storage / keep as is / long-lived links)
+- [x] SEO & GEO: per-page FA/EN titles and descriptions, canonical + hreflang, social previews, Organization/Article schema, sitemap.xml, robots.txt, llms.txt
 - [ ] Final publish
